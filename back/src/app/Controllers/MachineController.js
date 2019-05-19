@@ -13,6 +13,7 @@ class MachineController {
     await Promise.all(
       machines.map(async machine => {
         machine.setDataValue("lastStatus", await machine.getLastStatus());
+        machine.setDataValue("statusHistory", await machine.getStatusHistory());
       })
     );
 
@@ -56,12 +57,10 @@ class MachineController {
         await machineModel.getLastStatus()
       );
 
-      const statusHistory = await machineModel.getStatuses({
-        through: { attributes: [] },
-        order: [["created_at", "desc"]]
-      });
-
-      machineModel.setDataValue("statusHistory", statusHistory);
+      machineModel.setDataValue(
+        "statusHistory",
+        await machineModel.getStatusHistory()
+      );
 
       return successResponse(res, machineModel);
     } catch (error) {
@@ -117,33 +116,39 @@ class MachineController {
 
   async changeStatus(req, res) {
     try {
-      const { id } = req.params;
-      const { statusId } = req.body;
-
-      const statusModel = await Status.findOne({
-        where: { id: statusId }
+      const statusesModel = await Status.findAll({
+        attributes: ["id"],
+        raw: true
       });
 
-      if (!statusModel) {
-        return notFoundResponse(res, "Status not found.");
+      if (!statusesModel) {
+        return errorResponse(res, "No status in database.");
       }
 
-      const machine = await Machine.findOne({
-        where: { id }
+      const machines = await Machine.findAll({
+        attributes: ["id"],
+        raw: true
       });
 
-      if (!machine) {
-        return notFoundResponse(res, "Machine not found.");
+      if (!machines) {
+        return errorResponse(res, "No machines in database.");
       }
 
-      const historyCreated = await StatusHistory.create({
-        machine_id: id,
-        status_id: statusId
-      });
+      const statusCreated = [];
 
-      // const updated = await machine.createStatus(statusModel);
+      await Promise.all(
+        machines.map(async machine => {
+          let randomStatus =
+            statusesModel[Math.floor(Math.random() * statusesModel.length)];
+          const historyCreated = await StatusHistory.create({
+            machine_id: machine.id,
+            status_id: randomStatus.id
+          });
+          statusCreated.push(historyCreated.get({ plain: true }));
+        })
+      );
 
-      return successResponse(res, historyCreated);
+      return successResponse(res, statusCreated);
     } catch (error) {
       console.log(error);
       return errorResponse(res, error.message);

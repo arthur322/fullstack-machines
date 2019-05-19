@@ -14,8 +14,6 @@ routes.get("/", (req, res) => res.send("Hello world!"));
 // Machine routes
 routes.get("/machines", MachineController.all);
 
-routes.get("/machines/:id", MachineController.show);
-
 routes.post(
   "/machines",
   validateMiddleware(MachineSchema),
@@ -30,11 +28,9 @@ routes.put(
 
 routes.delete("/machines/:id", MachineController.delete);
 
-routes.post(
-  "/machines/:id/change-status",
-  validateMiddleware(ChangeStatusSchema),
-  MachineController.changeStatus
-);
+routes.get("/machines/change-status", MachineController.changeStatus);
+
+routes.get("/machines/:id", MachineController.show);
 
 // Status routes
 routes.get("/status", StatusController.all);

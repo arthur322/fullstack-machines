@@ -18,5 +18,13 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+  Machine.prototype.getStatusHistory = async function() {
+    return await this.getStatuses({
+      limit: 20,
+      through: { attributes: [] },
+      order: [["created_at", "desc"]]
+    });
+  };
+
   return Machine;
 };
