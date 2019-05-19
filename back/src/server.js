@@ -1,5 +1,6 @@
 const express = require("express");
 const validate = require("express-validation");
+const cors = require("cors");
 
 class App {
   constructor() {
@@ -12,6 +13,7 @@ class App {
 
   middlewares() {
     this.express.use(express.json());
+    this.express.use(cors());
   }
 
   routes() {
