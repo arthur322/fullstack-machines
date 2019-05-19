@@ -1,4 +1,5 @@
 const express = require("express");
+const validate = require("express-validation");
 
 class App {
   constructor() {
@@ -6,6 +7,7 @@ class App {
     this.isDev = process.env.NODE_ENV !== "production";
     this.middlewares();
     this.routes();
+    this.exception();
   }
 
   middlewares() {
@@ -13,7 +15,15 @@ class App {
   }
 
   routes() {
-    this.express.use(require("./routes"));
+    this.express.use("/api", require("./routes"));
+  }
+
+  exception() {
+    this.express.use(async (err, req, res, next) => {
+      if (err instanceof validate.ValidationError) {
+        return res.status(err.status).json(err);
+      }
+    });
   }
 }
 
