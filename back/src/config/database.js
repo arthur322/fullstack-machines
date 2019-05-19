@@ -1,9 +1,11 @@
+require("dotenv").config();
+
 module.exports = {
-  username: "root",
-  password: "1",
-  database: "tcs_machines",
-  host: "localhost",
-  dialect: "mysql",
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT,
   operatorAliases: false,
   define: {
     timestamps: true,

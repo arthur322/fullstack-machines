@@ -1,6 +1,7 @@
 const express = require("express");
 const validate = require("express-validation");
 const cors = require("cors");
+require("dotenv").config();
 
 class App {
   constructor() {
