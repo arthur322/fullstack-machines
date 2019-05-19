@@ -8,14 +8,13 @@ const { Machine, Status, StatusHistory } = require("../models");
 
 class MachineController {
   async all(req, res) {
-    const machines = await Machine.findAll({
-      include: {
-        model: Status,
-        as: "statuses",
-        required: false,
-        through: { attributes: [] }
-      }
-    });
+    const machines = await Machine.findAll();
+
+    await Promise.all(
+      machines.map(async machine => {
+        machine.setDataValue("lastStatus", await machine.getLastStatus());
+      })
+    );
 
     return res.json(machines);
   }
@@ -51,6 +50,11 @@ class MachineController {
       if (!machineModel) {
         return notFoundResponse(res, "Machine not found.");
       }
+
+      machineModel.setDataValue(
+        "lastStatus",
+        await machineModel.getLastStatus()
+      );
 
       const statusHistory = await machineModel.getStatuses({
         through: { attributes: [] },
