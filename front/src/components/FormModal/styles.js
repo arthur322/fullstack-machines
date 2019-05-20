@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 const changeVisibility = props => css`
   visibility: ${props => (props.show ? "visible" : "hidden")};
   opacity: ${props => (props.show ? "1" : "0")};
-  transition: 0.3s ease;
+  transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 `;
 
 export const ModalWrapper = styled.div`
@@ -19,6 +19,7 @@ export const ModalWrapper = styled.div`
 
 export const Form = styled.form`
   ${changeVisibility};
+  border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
@@ -29,7 +30,8 @@ export const Form = styled.form`
   position: fixed;
   top: 40px;
   left: 50%;
-  transform: translate(-50%);
+  transform: ${props =>
+    props.show ? "translate(-50%, 0)" : "translate(-50%, -200%)"};
   z-index: 4;
   & > * {
     margin-top: 10px;
