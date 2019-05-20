@@ -3,6 +3,9 @@ import styled from "styled-components";
 export const Container = styled.div`
   width: 100%;
   padding: 15px 30px;
+  @media (max-width: 425px) {
+    padding: 15px 10px;
+  }
 `;
 
 export const Button = styled.button`
