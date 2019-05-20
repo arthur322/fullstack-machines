@@ -1,6 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Machine = sequelize.define("Machine", {
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    lastStatus: DataTypes.VIRTUAL,
+    statusHistory: DataTypes.VIRTUAL
   });
 
   Machine.associate = models => {
