@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import TopMenu from "../../components/TopMenu";
-
-import { Container } from "./styles";
+import { Container, Button, Flex } from "../../components/SharedStyled/styled";
+import { List } from "./styles";
+import socketIOClient from "socket.io-client";
+let socket = socketIOClient("http://localhost:8080");
 
 const Dashboard = () => {
+  useEffect(() => {
+    socket.on("pingg", data => {
+      console.log(data);
+    });
+  });
+
+  const handleSocketStop = () => {
+    socket.emit("stopInverval", { oi: "oi" });
+  };
+
+  const handleSocketStart = () => {
+    socket.emit("startInterval", { oi: "oi" });
+  };
+
   return (
     <>
       <TopMenu />
       <Container>
-        <h2>Bom dia!</h2>
+        <Flex justify="space-between">
+          <h2>
+            <i className="fas fa-chart-line" /> Dashboard
+          </h2>
+          {/* <Button>Adicionar máquina</Button> */}
+        </Flex>
+        <List>
+          <button onClick={handleSocketStop}>Stop</button>
+          <button onClick={handleSocketStart}>Start</button>
+        </List>
       </Container>
     </>
   );
