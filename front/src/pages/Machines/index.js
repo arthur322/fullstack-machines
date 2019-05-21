@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import {
+  fetchGetAll,
+  fetchPost,
+  fetchPut,
+  fetchDelete
+} from "../../services/machines";
+
 import { Container, Button, Flex } from "../../components/SharedStyled/styled";
 import TopMenu from "../../components/TopMenu";
 import FormModal from "../../components/FormModal";
@@ -13,9 +20,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     async function getMachines() {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/machines`
-      );
+      const data = await fetchGetAll();
       setMachines(data);
       console.log(data);
     }
@@ -27,14 +32,40 @@ const Dashboard = () => {
     if (machine.name.length === 0) {
       alert("Nome inválido!");
     } else {
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/machines`,
-        machine
-      );
-      console.log(data);
-      console.log(machines);
-      setMachines([...machines, data.data]);
+      if (!machine.id) {
+        const data = await fetchPost(machine);
+        setMachines([...machines, data.data]);
+        setMachine({ id: "", name: "" });
+      } else {
+        await fetchPut(machine);
+        const allData = await fetchGetAll();
+        setMachines(allData);
+        setMachine({ id: "", name: "" });
+      }
       setShowModal(false);
+    }
+  };
+
+  const handleNew = () => {
+    setMachine({ id: "", name: "" });
+    setShowModal(true);
+  };
+
+  const handleEdit = machine => {
+    setMachine(machine);
+    setShowModal(true);
+  };
+
+  const handleDelete = async machine => {
+    const resp = window.confirm(
+      `Deseja realmente excluir a máquina ${machine.name}`
+    );
+    if (resp) {
+      const data = await fetchDelete(machine);
+      if (data.code == 200) {
+        const allData = await fetchGetAll();
+        setMachines(allData);
+      }
     }
   };
 
@@ -44,9 +75,7 @@ const Dashboard = () => {
       <Container>
         <Flex justify="space-between">
           <h2>Máquinas</h2>
-          <Button onClick={() => setShowModal(!showModal)}>
-            Adicionar máquina
-          </Button>
+          <Button onClick={handleNew}>Adicionar máquina</Button>
         </Flex>
         <FormModal
           show={showModal}
@@ -55,7 +84,11 @@ const Dashboard = () => {
           setMachine={e => setMachine({ ...machine, name: e.target.value })}
           handleSubmit={handleSubmit}
         />
-        <MachineTable dataList={machines} />
+        <MachineTable
+          dataList={machines}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       </Container>
     </>
   );

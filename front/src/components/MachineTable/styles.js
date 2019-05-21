@@ -10,6 +10,10 @@ export const Table = styled.table`
     td {
       color: white;
       font-weight: bold;
+      &:last-child {
+        padding: 0;
+        text-align: center;
+      }
     }
   }
   td {
@@ -20,10 +24,22 @@ export const Table = styled.table`
   }
   tbody tr {
     border-bottom: 1px solid #dcdcdc;
+    @media (min-width: 768px) {
+      td:last-child {
+        padding-left: 0;
+        text-align: center;
+        button:not(:last-child) {
+          margin-right: 5px;
+        }
+      }
+    }
   }
 `;
 
 export const OverflowWrapper = styled.div`
   width: 100%;
   overflow-y: auto;
+  i.fa-cog {
+    margin: 0 auto;
+  }
 `;

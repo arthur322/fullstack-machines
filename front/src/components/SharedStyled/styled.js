@@ -38,3 +38,16 @@ export const Flex = styled.div`
     }
   }
 `;
+
+export const IconButton = styled.button`
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  transition: 0.2s ease;
+  &:hover {
+    color: white;
+    background: ${({ backColor }) => (backColor ? backColor : "#2c3e50")};
+  }
+`;

@@ -8,7 +8,7 @@ const changeVisibility = props => css`
 
 export const ModalWrapper = styled.div`
   ${changeVisibility};
-  position: absolute;
+  position: fixed;
   width: 100%;
   left: 0;
   top: 0;
