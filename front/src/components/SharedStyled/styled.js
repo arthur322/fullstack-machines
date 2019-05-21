@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 
 export const Button = styled.button`
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "wait" : "pointer")};
   border: none;
   background: #2c3e50;
   padding: 10px;

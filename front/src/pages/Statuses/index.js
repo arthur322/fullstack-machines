@@ -14,7 +14,7 @@ import StatusTable from "../../components/StatusTable";
 
 const Statuses = () => {
   const [statuses, setStatuses] = useState([]);
-  const [status, setStatus] = useState({ id: "", status: "" });
+  const [status, setStatus] = useState({ id: "", status: "", code: "" });
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -28,25 +28,25 @@ const Statuses = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (status.status.length === 0) {
-      alert("Nome inválido!");
+    if (status.status.length === 0 || status.code.length === 0) {
+      alert("Campos obrigatórios em branco!");
     } else {
       if (!status.id) {
         const data = await fetchPost(status);
         setStatuses([...statuses, data.data]);
-        setStatus({ id: "", status: "" });
+        setStatus({ id: "", status: "", code: "" });
       } else {
         await fetchPut(status);
         const allData = await fetchGetAll();
         setStatuses(allData);
-        setStatus({ id: "", status: "" });
+        setStatus({ id: "", status: "", code: "" });
       }
       setShowModal(false);
     }
   };
 
   const handleNew = () => {
-    setStatus({ id: "", status: "" });
+    setStatus({ id: "", status: "", code: "" });
     setShowModal(true);
   };
 
@@ -57,13 +57,18 @@ const Statuses = () => {
 
   const handleDelete = async status => {
     const resp = window.confirm(
-      `Deseja realmente excluir o status ${status.status}`
+      `Deseja realmente excluir o status ${status.status}?`
     );
     if (resp) {
-      const data = await fetchDelete(status);
-      if (data.code === 200) {
-        const allData = await fetchGetAll();
-        setStatuses(allData);
+      try {
+        const data = await fetchDelete(status);
+        if (data.code === 200) {
+          setStatuses([]);
+          const allData = await fetchGetAll();
+          setStatuses(allData);
+        }
+      } catch (error) {
+        alert("Status já está sendo utilizado em outro relacionamento!");
       }
     }
   };
@@ -82,7 +87,9 @@ const Statuses = () => {
           show={showModal}
           setShow={setShowModal}
           status={status}
-          setStatus={e => setStatus({ ...status, status: e.target.value })}
+          setStatus={e =>
+            setStatus({ ...status, [e.target.name]: e.target.value })
+          }
           handleSubmit={handleSubmit}
         />
         <StatusTable

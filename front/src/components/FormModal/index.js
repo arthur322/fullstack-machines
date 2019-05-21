@@ -27,12 +27,10 @@ const FormModal = props => {
         <Button
           margin="0 auto"
           type="submit"
-          onClick={e => {
-            props.handleSubmit(e);
+          onClick={async e => {
             setLoading(true);
-            setTimeout(() => {
-              setLoading(false);
-            }, 3000);
+            await props.handleSubmit(e);
+            setLoading(false);
           }}
         >
           {loading ? (

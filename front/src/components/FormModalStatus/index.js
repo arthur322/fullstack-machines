@@ -18,6 +18,14 @@ const FormModalStatus = props => {
         <Input type="hidden" name="id" value={props.status.id} />
         <Input
           type="text"
+          name="code"
+          placeholder="Código do Status"
+          maxLength="25"
+          value={props.status.code}
+          onChange={props.setStatus}
+        />
+        <Input
+          type="text"
           name="status"
           placeholder="Nome do Status"
           maxLength="25"
@@ -27,13 +35,12 @@ const FormModalStatus = props => {
         <Button
           margin="0 auto"
           type="submit"
-          onClick={e => {
-            props.handleSubmit(e);
+          onClick={async e => {
             setLoading(true);
-            setTimeout(() => {
-              setLoading(false);
-            }, 3000);
+            await props.handleSubmit(e);
+            setLoading(false);
           }}
+          disabled={loading}
         >
           {loading ? (
             <i className="fas fa-cog fa-spin fa-lg" />

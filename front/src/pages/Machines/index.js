@@ -57,13 +57,18 @@ const Machines = () => {
 
   const handleDelete = async machine => {
     const resp = window.confirm(
-      `Deseja realmente excluir a máquina ${machine.name}`
+      `Deseja realmente excluir a máquina ${machine.name}?`
     );
     if (resp) {
-      const data = await fetchDelete(machine);
-      if (data.code === 200) {
-        const allData = await fetchGetAll();
-        setMachines(allData);
+      try {
+        const data = await fetchDelete(machine);
+        if (data.code === 200) {
+          setMachines([]);
+          const allData = await fetchGetAll();
+          setMachines(allData);
+        }
+      } catch (error) {
+        alert("Status já está sendo utilizado em outro relacionamento!");
       }
     }
   };
