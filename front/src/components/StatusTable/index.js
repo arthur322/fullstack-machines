@@ -4,14 +4,14 @@ import moment from "moment";
 import { Table, OverflowWrapper } from "./styles";
 import { IconButton } from "../../components/SharedStyled/styled";
 
-const MachineTable = props => (
+const StatusTable = props => (
   <OverflowWrapper>
     <Table>
       <thead>
         <tr>
           <td>id</td>
-          <td>Nome</td>
-          <td>Status Atual</td>
+          <td>Status</td>
+          <td>Código</td>
           <td>Criada em</td>
           <td>Ações</td>
         </tr>
@@ -21,12 +21,8 @@ const MachineTable = props => (
           props.dataList.map(data => (
             <tr key={data.id}>
               <td>{data.id}</td>
-              <td>{data.name}</td>
-              <td>
-                {data.hasOwnProperty("lastStatus") && data.lastStatus.length
-                  ? data.lastStatus[0].status
-                  : ""}
-              </td>
+              <td>{data.status}</td>
+              <td>{data.code}</td>
               <td>{moment(data.createdAt).format("DD/MM/YYYY HH:mm")}</td>
               <td>
                 <IconButton onClick={() => props.onEdit(data)}>
@@ -52,4 +48,4 @@ const MachineTable = props => (
     </Table>
   </OverflowWrapper>
 );
-export default MachineTable;
+export default StatusTable;

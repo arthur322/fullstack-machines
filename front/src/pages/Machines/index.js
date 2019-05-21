@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import {
   fetchGetAll,
@@ -13,7 +12,7 @@ import TopMenu from "../../components/TopMenu";
 import FormModal from "../../components/FormModal";
 import MachineTable from "../../components/MachineTable";
 
-const Dashboard = () => {
+const Machines = () => {
   const [machines, setMachines] = useState([]);
   const [machine, setMachine] = useState({ id: "", name: "" });
   const [showModal, setShowModal] = useState(false);
@@ -62,7 +61,7 @@ const Dashboard = () => {
     );
     if (resp) {
       const data = await fetchDelete(machine);
-      if (data.code == 200) {
+      if (data.code === 200) {
         const allData = await fetchGetAll();
         setMachines(allData);
       }
@@ -74,7 +73,9 @@ const Dashboard = () => {
       <TopMenu />
       <Container>
         <Flex justify="space-between">
-          <h2>Máquinas</h2>
+          <h2>
+            <i className="fas fa-robot" /> Máquinas
+          </h2>
           <Button onClick={handleNew}>Adicionar máquina</Button>
         </Flex>
         <FormModal
@@ -94,4 +95,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Machines;
