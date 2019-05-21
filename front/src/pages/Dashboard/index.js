@@ -3,14 +3,21 @@ import React, { useEffect } from "react";
 import TopMenu from "../../components/TopMenu";
 import { Container, Button, Flex } from "../../components/SharedStyled/styled";
 import { List } from "./styles";
-import socketIOClient from "socket.io-client";
-let socket = socketIOClient("http://localhost:8080");
+
+import { socket } from "../../services/socket";
 
 const Dashboard = () => {
   useEffect(() => {
+    socket.connect();
     socket.on("pingg", data => {
       console.log(data);
     });
+    console.log('montei :)')
+
+    return () => {
+      socket.off("pingg");
+      socket.disconnect();
+    }
   });
 
   const handleSocketStop = () => {
