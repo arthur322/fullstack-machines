@@ -4,25 +4,30 @@ const {
   errorResponse
 } = require("../utils/ApiResponses");
 
-const CronService = require("../services/cron");
+const CronService = require("../services/CronService");
 
 const { Machine, Status, StatusHistory } = require("../models");
 
 class MachineController {
+  constructor() {
+    this.cronService = new CronService(this.changeStatus);
+  }
+
   startRandonMachines(req, res) {
-    CronService.start("* * * * * *");
-    return successResponse(res, "foi");
+    this.cronService.stop();
+    this.cronService.start("* * * * * *");
+    return successResponse(res, "Cron iniciado.");
   }
 
   stopRandonMachines(req, res) {
-    CronService.stop();
-    return successResponse(res, "foi");
+    this.cronService.stop();
+    return successResponse(res, "Cron parado.");
   }
 
   changeRandonMachinesTime(req, res) {
-    CronService.stop();
-    CronService.start(req.query.time);
-    return successResponse(res, "foi");
+    this.cronService.stop();
+    this.cronService.start(req.query.time);
+    return successResponse(res, "Tempo do cron alterado.");
   }
 
   async all(req, res) {
@@ -132,7 +137,7 @@ class MachineController {
     }
   }
 
-  async changeStatus(req, res) {
+  async changeStatus() {
     try {
       const statusesModel = await Status.findAll({
         attributes: ["id"],
@@ -140,7 +145,7 @@ class MachineController {
       });
 
       if (!statusesModel) {
-        return errorResponse(res, "No status in database.");
+        return;
       }
 
       const machines = await Machine.findAll({
@@ -149,7 +154,7 @@ class MachineController {
       });
 
       if (!machines) {
-        return errorResponse(res, "No machines in database.");
+        return;
       }
 
       const statusCreated = [];
@@ -166,7 +171,9 @@ class MachineController {
         })
       );
 
-      return successResponse(res, statusCreated);
+      console.log(statusCreated);
+
+      return;
     } catch (error) {
       console.log(error);
       return errorResponse(res, error.message);

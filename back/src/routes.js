@@ -2,7 +2,7 @@ const express = require("express");
 const validateMiddleware = require("express-validation");
 const MachineSchema = require("./app/schemas/Machine");
 const StatusSchema = require("./app/schemas/Status");
-const ChangeStatusSchema = require("./app/schemas/ChangeStatus");
+// const ChangeStatusSchema = require("./app/schemas/ChangeStatus");
 
 const routes = express.Router();
 
@@ -28,7 +28,7 @@ routes.put(
 
 routes.delete("/machines/:id", MachineController.delete);
 
-routes.get("/machines/change-status", MachineController.changeStatus);
+// routes.get("/machines/change-status", MachineController.changeStatus);
 
 routes.get("/machines/:id", MachineController.show);
 
@@ -52,13 +52,16 @@ routes.put(
 routes.delete("/status/:id", StatusController.delete);
 
 // Cron routes
-routes.get("/random-machine-start", MachineController.startRandonMachines);
+routes.get("/random-machine-start", (req, res) =>
+  MachineController.startRandonMachines(req, res)
+);
 
-routes.get("/random-machine-stop", MachineController.stopRandonMachines);
+routes.get("/random-machine-stop", (req, res) =>
+  MachineController.stopRandonMachines(req, res)
+);
 
-routes.get(
-  "/random-machine-change",
-  MachineController.changeRandonMachinesTime
+routes.get("/random-machine-change", (req, res) =>
+  MachineController.changeRandonMachinesTime(req, res)
 );
 
 module.exports = routes;
