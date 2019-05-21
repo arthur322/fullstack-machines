@@ -1,15 +1,20 @@
 const express = require("express");
 const validate = require("express-validation");
 const cors = require("cors");
+const http = require("http");
+const io = require("socket.io");
 require("dotenv").config();
 
 class App {
   constructor() {
     this.express = express();
+    this.server = http.Server(this.express);
+    this.io = io(this.server);
     this.isDev = process.env.NODE_ENV !== "production";
     this.middlewares();
     this.routes();
     this.exception();
+    this.socketIo();
   }
 
   middlewares() {
@@ -28,6 +33,31 @@ class App {
       }
     });
   }
+
+  socketIo() {
+    this.io.on("connection", client => {
+      console.log("alguem entrou :)");
+      let interval = setInterval(() => {
+        this.io.emit("pingg", "oii");
+      }, 2000);
+
+      client.on("stopInverval", () => {
+        console.log("tchaou :c");
+        clearInterval(interval);
+      });
+
+      client.on("startInterval", interval => {
+        interval = setInterval(() => {
+          this.io.emit("pingg", "oii");
+        }, 2000);
+      });
+
+      client.on("disconnect", () => {
+        console.log("saiuuu :cc");
+        clearInterval(interval);
+      });
+    });
+  }
 }
 
-module.exports = new App().express;
+module.exports = new App().server;
