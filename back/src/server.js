@@ -5,8 +5,6 @@ const http = require("http");
 const io = require("socket.io");
 require("dotenv").config();
 
-
-
 class App {
   constructor() {
     this.express = express();
@@ -17,9 +15,9 @@ class App {
     this.routes();
     this.exception();
 
+    this.interval = null;
+
     this.socketIo();
-    
-    this.interval = null
   }
 
   middlewares() {
@@ -43,14 +41,13 @@ class App {
     this.io.on("connection", client => {
       console.log("alguem entrou :)");
 
-      this.interval = setInterval(() => {
-        this.io.emit("pingg", "oii");
-        console.log("emitiu");
-      }, 1000);
+      // this.interval = setInterval(() => {
+      //   this.io.emit("pingg", "oii koen");
+      //   console.log("emitiu");
+      // }, 1000);
 
       client.on("disconnect", () => {
         console.log("\ndesconectou");
-        clearInterval(this.interval);
       });
     });
   }

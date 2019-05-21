@@ -4,9 +4,27 @@ const {
   errorResponse
 } = require("../utils/ApiResponses");
 
+const CronService = require("../services/cron");
+
 const { Machine, Status, StatusHistory } = require("../models");
 
 class MachineController {
+  startRandonMachines(req, res) {
+    CronService.start("* * * * * *");
+    return successResponse(res, "foi");
+  }
+
+  stopRandonMachines(req, res) {
+    CronService.stop();
+    return successResponse(res, "foi");
+  }
+
+  changeRandonMachinesTime(req, res) {
+    CronService.stop();
+    CronService.start(req.query.time);
+    return successResponse(res, "foi");
+  }
+
   async all(req, res) {
     const machines = await Machine.findAll();
 

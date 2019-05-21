@@ -51,4 +51,14 @@ routes.put(
 
 routes.delete("/status/:id", StatusController.delete);
 
+// Cron routes
+routes.get("/random-machine-start", MachineController.startRandonMachines);
+
+routes.get("/random-machine-stop", MachineController.stopRandonMachines);
+
+routes.get(
+  "/random-machine-change",
+  MachineController.changeRandonMachinesTime
+);
+
 module.exports = routes;
