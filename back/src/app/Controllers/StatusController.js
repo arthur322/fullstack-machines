@@ -14,9 +14,10 @@ class StatusController {
 
   async create(req, res) {
     try {
-      const { status } = req.body;
+      const { status, code } = req.body;
       const result = await Status.create({
-        status
+        status,
+        code
       });
 
       return successResponse(res, result);
@@ -55,7 +56,7 @@ class StatusController {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { status } = req.body;
+      const { status, code } = req.body;
 
       const statusModel = await Status.findOne({
         where: { id }
@@ -66,7 +67,8 @@ class StatusController {
       }
 
       const updated = await statusModel.update({
-        status
+        status,
+        code
       });
 
       return successResponse(res, updated);

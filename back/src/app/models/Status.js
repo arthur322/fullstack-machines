@@ -1,5 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Status = sequelize.define("Status", {
+    code: DataTypes.STRING,
     status: DataTypes.STRING
   });
 
