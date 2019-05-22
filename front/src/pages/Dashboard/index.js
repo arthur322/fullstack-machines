@@ -84,17 +84,18 @@ const Dashboard = () => {
             <Card key={machine.id}>
               <h4>{machine.name}</h4>
               <p>
-                {machine.lastStatus.length ? machine.lastStatus[0].code : ""}
+                {machine.lastStatus.length
+                  ? machine.lastStatus[0].code
+                  : "<Nenhum status recebido>"}
               </p>
               <p>
                 {machine.lastStatus.length ? machine.lastStatus[0].status : ""}
               </p>
               <p>
-                Atualizado em:{" "}
                 {machine.lastStatus.length
-                  ? moment(
+                  ? `Atualizado em: ${moment(
                       machine.lastStatus[0].status_history.createdAt
-                    ).format("DD/MM/YYYY HH:mm:ss")
+                    ).format("DD/MM/YYYY HH:mm:ss")}`
                   : ""}
               </p>
             </Card>
