@@ -1,3 +1,5 @@
+const Status = require("./Status");
+
 module.exports = (sequelize, DataTypes) => {
   const Machine = sequelize.define("Machine", {
     name: DataTypes.STRING,
@@ -16,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   Machine.prototype.getLastStatus = async function() {
     return await this.getStatuses({
       limit: 1,
-      order: [["created_at", "asc"]]
+      order: [[Status, "status_history.created_at", "desc"]]
     });
   };
 
@@ -24,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     return await this.getStatuses({
       limit: 20,
       through: { attributes: [] },
-      order: [["created_at", "asc"]]
+      order: [[Status, "status_history.created_at", "desc"]]
     });
   };
 
