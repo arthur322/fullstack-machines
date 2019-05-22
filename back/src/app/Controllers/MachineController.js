@@ -10,12 +10,13 @@ const { Machine, Status, StatusHistory } = require("../models");
 
 class MachineController {
   constructor() {
+    this.socket = null;
     this.cronService = new CronService(this.changeStatus);
   }
 
   startRandonMachines(req, res) {
     this.cronService.stop();
-    this.cronService.start("* * * * * *");
+    this.cronService.start("", req.app.get("sockett"));
     return successResponse(res, "Cron iniciado.");
   }
 
@@ -26,7 +27,7 @@ class MachineController {
 
   changeRandonMachinesTime(req, res) {
     this.cronService.stop();
-    this.cronService.start(req.query.time);
+    this.cronService.start(req.query.time, req.app.get("sockett"));
     return successResponse(res, "Tempo do cron alterado.");
   }
 
@@ -171,9 +172,19 @@ class MachineController {
         })
       );
 
-      console.log(statusCreated);
+      const AllMachines = await Machine.findAll();
 
-      return;
+      await Promise.all(
+        AllMachines.map(async machine => {
+          machine.setDataValue("lastStatus", await machine.getLastStatus());
+          machine.setDataValue(
+            "statusHistory",
+            await machine.getStatusHistory()
+          );
+        })
+      );
+
+      return AllMachines;
     } catch (error) {
       console.log(error);
       return errorResponse(res, error.message);

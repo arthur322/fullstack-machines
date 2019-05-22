@@ -18,6 +18,7 @@ class App {
     this.interval = null;
 
     this.socketIo();
+    this.express.set("sockett", this.io);
   }
 
   middlewares() {
@@ -40,11 +41,6 @@ class App {
   socketIo() {
     this.io.on("connection", client => {
       console.log("alguem entrou :)");
-
-      // this.interval = setInterval(() => {
-      //   this.io.emit("pingg", "oii koen");
-      //   console.log("emitiu");
-      // }, 1000);
 
       client.on("disconnect", () => {
         console.log("\ndesconectou");

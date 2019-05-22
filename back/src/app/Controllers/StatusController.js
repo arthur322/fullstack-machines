@@ -45,7 +45,6 @@ class StatusController {
         return notFoundResponse(res, "Status not found.");
       }
 
-      console.log(statusModel);
       return successResponse(res, statusModel);
     } catch (error) {
       console.log(error);
