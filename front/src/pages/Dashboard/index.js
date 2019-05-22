@@ -38,6 +38,7 @@ const Dashboard = () => {
   useEffect(() => {
     return () => {
       socket.off("nowStatuses");
+      socket.off("isCroned");
       socket.disconnect();
     };
   }, []);
@@ -65,7 +66,7 @@ const Dashboard = () => {
             <i className="fas fa-chart-line" /> Dashboard
           </h2>
           {socketStatus ? (
-            <Button onClick={handleStopRandom}>Simulador iniciado</Button>
+            <Button onClick={handleStopRandom}>Parar simulador</Button>
           ) : (
             <>
               <Select onChange={handleFreqChange}>
@@ -74,7 +75,7 @@ const Dashboard = () => {
                 <option value="*/30 * * * * *">30 segundos</option>
                 <option value="* * * * *">1 minuto</option>
               </Select>
-              <Button onClick={handleStartRandom}>Simulador parado</Button>
+              <Button onClick={handleStartRandom}>Iniciar simulador</Button>
             </>
           )}
         </Flex>
