@@ -17,7 +17,7 @@ const StatusTable = props => (
         </tr>
       </thead>
       <tbody>
-        {props.dataList.length ? (
+        {!props.loading ? (
           props.dataList.map(data => (
             <tr key={data.id}>
               <td>{data.id}</td>

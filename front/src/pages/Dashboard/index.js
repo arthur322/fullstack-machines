@@ -1,31 +1,59 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import moment from "moment";
 
 import TopMenu from "../../components/TopMenu";
 import { Container, Button, Flex } from "../../components/SharedStyled/styled";
-import { List } from "./styles";
+import { List, Card, Select } from "./styles";
 
 import { socket } from "../../services/socket";
+import { fetchGetAll, startRandom, stopRandom } from "../../services/machines";
 
 const Dashboard = () => {
+  const [frequency, setFrequency] = useState("*/5 * * * * *");
+  const [socketStatus, setSocketStatus] = useState(false);
+  const [machines, setMachines] = useState([]);
+
   useEffect(() => {
+    async function getMachines() {
+      const data = await fetchGetAll();
+      setMachines(data);
+    }
+    getMachines();
+
     socket.connect();
-    socket.on("pingg", data => {
+
+    socket.on("isCroned", () => {
+      setSocketStatus(true);
+      console.log("is croned");
+    });
+
+    socket.on("nowStatuses", data => {
+      setSocketStatus(true);
+      setMachines([]);
+      setMachines(data);
       console.log(data);
     });
-    console.log('montei :)')
+  }, []);
 
+  useEffect(() => {
     return () => {
-      socket.off("pingg");
+      socket.off("nowStatuses");
       socket.disconnect();
-    }
-  });
+    };
+  }, []);
 
-  const handleSocketStop = () => {
-    socket.emit("stopInverval", { oi: "oi" });
+  const handleStartRandom = async () => {
+    await startRandom(frequency);
+    setSocketStatus(true);
   };
 
-  const handleSocketStart = () => {
-    socket.emit("startInterval", { oi: "oi" });
+  const handleStopRandom = async () => {
+    await stopRandom();
+    setSocketStatus(false);
+  };
+
+  const handleFreqChange = e => {
+    setFrequency(e.target.value);
   };
 
   return (
@@ -36,11 +64,40 @@ const Dashboard = () => {
           <h2>
             <i className="fas fa-chart-line" /> Dashboard
           </h2>
-          {/* <Button>Adicionar máquina</Button> */}
+          {socketStatus ? (
+            <Button onClick={handleStopRandom}>Simulador iniciado</Button>
+          ) : (
+            <>
+              <Select onChange={handleFreqChange}>
+                <option value="*/5 * * * * *">5 segundos</option>
+                <option value="*/15 * * * * *">15 segundos</option>
+                <option value="*/30 * * * * *">30 segundos</option>
+                <option value="* * * * *">1 minuto</option>
+              </Select>
+              <Button onClick={handleStartRandom}>Simulador parado</Button>
+            </>
+          )}
         </Flex>
         <List>
-          <button onClick={handleSocketStop}>Stop</button>
-          <button onClick={handleSocketStart}>Start</button>
+          {machines.map(machine => (
+            <Card key={machine.id}>
+              <h4>{machine.name}</h4>
+              <p>
+                {machine.lastStatus.length ? machine.lastStatus[0].code : ""}
+              </p>
+              <p>
+                {machine.lastStatus.length ? machine.lastStatus[0].status : ""}
+              </p>
+              <p>
+                Atualizado em:{" "}
+                {machine.lastStatus.length
+                  ? moment(
+                      machine.lastStatus[0].status_history.createdAt
+                    ).format("DD/MM/YYYY HH:mm:ss")
+                  : ""}
+              </p>
+            </Card>
+          ))}
         </List>
       </Container>
     </>

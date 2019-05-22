@@ -34,3 +34,15 @@ export const fetchGetAll = async () => {
 
   return data;
 };
+
+export const startRandom = async frequency => {
+  await axios.get(
+    `${
+      process.env.REACT_APP_API_BASE_URL
+    }/random-machine-change?time=${frequency}`
+  );
+};
+
+export const stopRandom = async () => {
+  await axios.get(`${process.env.REACT_APP_API_BASE_URL}/random-machine-stop`);
+};

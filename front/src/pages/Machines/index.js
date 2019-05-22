@@ -13,6 +13,7 @@ import FormModal from "../../components/FormModal";
 import MachineTable from "../../components/MachineTable";
 
 const Machines = () => {
+  const [loading, setLoading] = useState(true);
   const [machines, setMachines] = useState([]);
   const [machine, setMachine] = useState({ id: "", name: "" });
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +22,7 @@ const Machines = () => {
     async function getMachines() {
       const data = await fetchGetAll();
       setMachines(data);
+      setLoading(false);
       console.log(data);
     }
     getMachines();
@@ -91,6 +93,7 @@ const Machines = () => {
           handleSubmit={handleSubmit}
         />
         <MachineTable
+          loading={loading}
           dataList={machines}
           onEdit={handleEdit}
           onDelete={handleDelete}

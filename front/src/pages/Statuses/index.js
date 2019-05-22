@@ -13,6 +13,7 @@ import FormModalStatus from "../../components/FormModalStatus";
 import StatusTable from "../../components/StatusTable";
 
 const Statuses = () => {
+  const [loading, setLoading] = useState(true);
   const [statuses, setStatuses] = useState([]);
   const [status, setStatus] = useState({ id: "", status: "", code: "" });
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +22,7 @@ const Statuses = () => {
     async function getStatuses() {
       const data = await fetchGetAll();
       setStatuses(data);
+      setLoading(false);
       console.log(data);
     }
     getStatuses();
@@ -93,6 +95,7 @@ const Statuses = () => {
           handleSubmit={handleSubmit}
         />
         <StatusTable
+          loading={loading}
           dataList={statuses}
           onEdit={handleEdit}
           onDelete={handleDelete}
