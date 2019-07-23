@@ -1,6 +1,7 @@
 # Fullstack Machines
 Aplicação web criada com objetivos de aprendizagem relacionados a estruturação e arquitetura de software. Backend criado em Node Js uado como api para um frontend em React Js.
 O sistema permite o gerenciamento de uma simulação de máquinas em um ambiente, onde são gerados eventos de status que devem ser tratados pela aplicação. Existe um CRUD para máquinas, status, e um simulador criado para gerar status aleatórios para cada máquina criada. O intervalo de geração dos status é controlado pelo usuário, dentro de opções pré definidas.
+Teste o app: http://tcs-machines.surge.sh/.
 
 Foi utilizado no backend:
 * Express para requisições e controle de fluxo.
